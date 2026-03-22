@@ -1,6 +1,6 @@
-# Property Price Prediction
+# Bike Rental Demand Prediction
 
-A Jupyter Notebook building a regularised regression model to predict residential property sale prices in the Australian market, helping a US-based investment company — Surprise Housing — identify undervalued properties for strategic acquisition.
+A Jupyter Notebook applying multiple linear regression to forecast daily bike-sharing demand for BoomBikes, a US bike-rental provider, using two years of historical data to support post-pandemic revenue recovery planning.
 
 ---
 
@@ -21,13 +21,13 @@ A Jupyter Notebook building a regularised regression model to predict residentia
 
 ## Overview
 
-Surprise Housing, a US-based property investment firm, is entering the Australian real estate market. Their strategy involves purchasing properties below market value and selling them at a profit. This project builds a predictive regression model — incorporating Lasso and Ridge regularisation — to estimate the actual market value of prospective properties, providing a data-driven basis for investment decisions.
+BoomBikes suffered a significant revenue decline during the COVID-19 pandemic. As restrictions ease and the economy recovers, the company requires a data-driven understanding of which factors drive shared bike demand in the American market. This project builds an interpretable multiple linear regression model to identify the significant demand predictors and forecast daily rental counts, informing fleet management and targeted marketing strategy.
 
 ---
 
 ## Background
 
-Predicting property prices is a regression problem with high-dimensional feature spaces, multicollinearity between predictors, and a mix of categorical and continuous variables. Standard linear regression is prone to overfitting in such settings. Regularisation techniques — Ridge (L2) and Lasso (L1) — penalise model complexity to improve generalisation. Lasso additionally performs implicit feature selection by shrinking less informative coefficients to zero, making it particularly interpretable for identifying the true drivers of property value.
+Bike-sharing demand is influenced by a combination of temporal, meteorological, and behavioural factors. Multiple linear regression provides an interpretable framework for quantifying the individual contribution of each predictor to demand, making it well-suited to generating business-actionable insights alongside predictions. This project follows a rigorous modelling workflow including assumption verification, multicollinearity checks (VIF), and residual diagnostics to ensure statistical validity of the final model.
 
 ---
 
@@ -35,10 +35,14 @@ Predicting property prices is a regression problem with high-dimensional feature
 
 | File | Description |
 |---|---|
-| `train.csv` | Training data with 80+ property features and sale prices (Australian market) |
-| `SubjectiveQuestions.pdf` | Written analysis of model choices, regularisation interpretation, and business insights |
+| `Bike_Rental.ipynb` | Main analysis notebook |
+| `Linear Regression Subjective Questions.pdf` | Written analysis of regression assumptions, VIF interpretation, and business recommendations |
 
-Key features include structural attributes (floor area, year built), quality ratings (kitchen quality, overall condition), location (neighbourhood), and sale conditions.
+The dataset contains **732 daily observations** (2018–2019) with features including:
+
+- **Temporal:** year, month, weekday, holiday, working day
+- **Meteorological:** season, weather situation, temperature, apparent temperature, humidity, wind speed
+- **Target variable:** `cnt` — total daily bike rentals (casual + registered users)
 
 ---
 
@@ -46,15 +50,13 @@ Key features include structural attributes (floor area, year built), quality rat
 
 | Section | Description |
 |---|---|
-| Data Loading & EDA | Loading data, distribution analysis, missing value treatment, outlier inspection |
-| Feature Engineering | Encoding categorical variables, handling skewed distributions, creating derived features |
-| Train/Validation Split | Splitting data for unbiased hyperparameter tuning |
-| Linear Regression Baseline | Establishing an unregularised benchmark |
-| Ridge Regression | L2 regularisation with cross-validated alpha selection |
-| Lasso Regression | L1 regularisation with feature selection and alpha tuning |
-| Model Evaluation | RMSE, R², residual analysis on validation and test sets |
-| Feature Importance | Identifying the 12 most influential predictors of sale price |
-| Business Insights | Translating model coefficients into actionable investment guidance |
+| Data Loading & EDA | Distribution analysis, seasonal patterns, correlation heatmap, pairplots |
+| Feature Engineering | Encoding categorical variables (season, weather, month), creating dummy variables |
+| Train/Test Split | 70/30 stratified split for model training and evaluation |
+| Model Building | Iterative feature selection using RFE (Recursive Feature Elimination) and p-value/VIF pruning |
+| Assumption Verification | Linearity, normality of residuals, homoscedasticity, multicollinearity checks |
+| Model Evaluation | R², Adjusted R², RMSE on train and test sets |
+| Business Insights | Translating model coefficients into demand forecasting recommendations |
 
 ---
 
@@ -64,8 +66,8 @@ Key features include structural attributes (floor area, year built), quality rat
 |---|---|---|
 | `pandas` | 2.0.3 | Data manipulation |
 | `numpy` | 1.24.3 | Numerical operations |
-| `scikit-learn` | 1.3.0 | Regression models, regularisation, cross-validation |
-| `matplotlib` | 3.7.2 | EDA and residual plots |
+| `scikit-learn` | 1.3.0 | Linear regression, RFE, train/test split |
+| `matplotlib` | 3.7.2 | EDA and residual diagnostic plots |
 | `python` | 3.11.5 | Runtime environment |
 
 ---
@@ -73,27 +75,35 @@ Key features include structural attributes (floor area, year built), quality rat
 ## Setup and Installation
 
 ```bash
-git clone https://github.com/chetnapriyadarshini/PropertyPricePrediction.git
-cd PropertyPricePrediction
+git clone https://github.com/chetnapriyadarshini/Bike_Rental_Prediction.git
+cd Bike_Rental_Prediction
 pip install pandas numpy scikit-learn matplotlib
-jupyter notebook "Property Pricing.ipynb"
+jupyter notebook Bike_Rental.ipynb
 ```
 
 ---
 
 ## Results and Conclusions
 
-The Lasso model identifies **12 variables** as the primary predictors of property price. Key findings:
+The final linear regression model explains a strong proportion of variance in daily bike rental demand. Key findings:
 
-| Predictor | Direction | Interpretation |
-|---|---|---|
-| `YearBuilt` | Positive | Newer properties command higher prices |
-| `1stFlrSF` | Positive | Larger ground floor area increases value |
-| `2ndFlrSF` | Positive | Multi-storey properties are valued higher |
-| `KitchenQual_TA` (Typical) | **Negative** | Below-average kitchen quality suppresses price |
-| `Crawford` neighbourhood | Positive | Crawford is the highest-value neighbourhood in the dataset |
+| Factor | Effect on Demand |
+|---|---|
+| **Year (2019 vs 2018)** | Positive — demand grew year-on-year, indicating market growth |
+| **Temperature** | Strong positive — warmer weather drives significantly higher rentals |
+| **September & October** | Peak rental months — likely due to optimal weather conditions |
+| **Clear / partly cloudy weather** | Positive — ideal cycling conditions increase demand |
+| **Snowfall / heavy rain** | Strong negative — adverse weather sharply reduces rentals |
+| **Wind speed** | Negative — higher winds deter casual riders |
+| **Humidity** | Negative — high humidity reduces rental activity |
 
-**Investment implication:** Properties in Crawford with large floor areas and recent construction year represent the highest-value acquisition targets for Surprise Housing's Australian strategy.
+**Business implication:** BoomBikes should maximise fleet availability and targeted promotions in September–October and during warm, clear weather periods. Winter and adverse weather months represent natural demand troughs where maintenance and repositioning activities can be scheduled.
+
+---
+
+## References
+
+- Fanaee-T, H. & Gama, J. (2014). *Event labeling combining ensemble detectors and background knowledge*. Progress in Artificial Intelligence, 2, 113–127.
 
 ---
 
