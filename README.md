@@ -1,53 +1,102 @@
-# Project Name
-> Outline a brief description of your project.
+# Property Price Prediction
 
+A Jupyter Notebook building a regularised regression model to predict residential property sale prices in the Australian market, helping a US-based investment company — Surprise Housing — identify undervalued properties for strategic acquisition.
+
+---
 
 ## Table of Contents
-* [General Info](#general-information)
-* [Technologies Used](#technologies-used)
-* [Conclusions](#conclusions)
 
-<!-- You can include any other section that is pertinent to your problem -->
+- [Overview](#overview)
+- [Background](#background)
+- [Dataset](#dataset)
+- [Notebook Contents](#notebook-contents)
+- [Technologies Used](#technologies-used)
+- [Setup and Installation](#setup-and-installation)
+- [Usage](#usage)
+- [Results and Conclusions](#results-and-conclusions)
+- [References](#references)
+- [Contact](#contact)
 
-## General Information
-- This project uses multiple linear regression to make prediction for a bike rental company to predict the demand for the bikes based on past data of years 2018 and 2019
-- A US bike-sharing provider BoomBikes has recently suffered considerable dips in their revenues due to the ongoing Corona pandemic. 
-  The company is finding it very difficult to sustain in the current market scenario. So, it has decided to come up with a mindful business plan to be able to accelerate its revenue as soon as the ongoing lockdown comes to an end,
-  and the economy restores to a healthy state. 
-- Understand the factors on which the demand for these shared bikes depends. Specifically, they want to understand the factors affecting the demand for these shared bikes in the American market.
-  The company wants to know:
-	Which variables are significant in predicting the demand for shared bikes.
-	How well those variables describe the bike demands
-- The dataset is a csv file of 732 rows of daily bike demands across the American market based on some factors like year, weather, month, holiday, weekday, weekend etc over the years 2018 and 2019.
+---
 
-<!-- You don't have to answer all the questions - just the ones relevant to your project. -->
+## Overview
 
-## Conclusions
-- People tend rent more bikes during September and October months
-- People rent more bikes during clear and cloudy days
-- Snowy weather adversly affects the bike rental
-- Temperature is directly related to bike rental. More people rent bikes in warm weather.
+Surprise Housing, a US-based property investment firm, is entering the Australian real estate market. Their strategy involves purchasing properties below market value and selling them at a profit. This project builds a predictive regression model — incorporating Lasso and Ridge regularisation — to estimate the actual market value of prospective properties, providing a data-driven basis for investment decisions.
 
-<!-- You don't have to answer all the questions - just the ones relevant to your project. -->
+---
 
+## Background
+
+Predicting property prices is a regression problem with high-dimensional feature spaces, multicollinearity between predictors, and a mix of categorical and continuous variables. Standard linear regression is prone to overfitting in such settings. Regularisation techniques — Ridge (L2) and Lasso (L1) — penalise model complexity to improve generalisation. Lasso additionally performs implicit feature selection by shrinking less informative coefficients to zero, making it particularly interpretable for identifying the true drivers of property value.
+
+---
+
+## Dataset
+
+| File | Description |
+|---|---|
+| `train.csv` | Training data with 80+ property features and sale prices (Australian market) |
+| `SubjectiveQuestions.pdf` | Written analysis of model choices, regularisation interpretation, and business insights |
+
+Key features include structural attributes (floor area, year built), quality ratings (kitchen quality, overall condition), location (neighbourhood), and sale conditions.
+
+---
+
+## Notebook Contents
+
+| Section | Description |
+|---|---|
+| Data Loading & EDA | Loading data, distribution analysis, missing value treatment, outlier inspection |
+| Feature Engineering | Encoding categorical variables, handling skewed distributions, creating derived features |
+| Train/Validation Split | Splitting data for unbiased hyperparameter tuning |
+| Linear Regression Baseline | Establishing an unregularised benchmark |
+| Ridge Regression | L2 regularisation with cross-validated alpha selection |
+| Lasso Regression | L1 regularisation with feature selection and alpha tuning |
+| Model Evaluation | RMSE, R², residual analysis on validation and test sets |
+| Feature Importance | Identifying the 12 most influential predictors of sale price |
+| Business Insights | Translating model coefficients into actionable investment guidance |
+
+---
 
 ## Technologies Used
-argcomplete==3.1.1
-click==8.1.7
-colorama==0.4.6
-jsonpickle==3.0.2
-packaging==23.1
-pipx==1.2.0
-userpath==1.9.0
-pandas==2.0.3
-numpy==1.24.3
-matplotlib==3.7.2
-python==3.11.5
-sklearn==1.3.0
-<!-- As the libraries versions keep on changing, it is recommended to mention the version of library used in this project -->
 
+| Library | Version | Purpose |
+|---|---|---|
+| `pandas` | 2.0.3 | Data manipulation |
+| `numpy` | 1.24.3 | Numerical operations |
+| `scikit-learn` | 1.3.0 | Regression models, regularisation, cross-validation |
+| `matplotlib` | 3.7.2 | EDA and residual plots |
+| `python` | 3.11.5 | Runtime environment |
 
+---
+
+## Setup and Installation
+
+```bash
+git clone https://github.com/chetnapriyadarshini/PropertyPricePrediction.git
+cd PropertyPricePrediction
+pip install pandas numpy scikit-learn matplotlib
+jupyter notebook "Property Pricing.ipynb"
+```
+
+---
+
+## Results and Conclusions
+
+The Lasso model identifies **12 variables** as the primary predictors of property price. Key findings:
+
+| Predictor | Direction | Interpretation |
+|---|---|---|
+| `YearBuilt` | Positive | Newer properties command higher prices |
+| `1stFlrSF` | Positive | Larger ground floor area increases value |
+| `2ndFlrSF` | Positive | Multi-storey properties are valued higher |
+| `KitchenQual_TA` (Typical) | **Negative** | Below-average kitchen quality suppresses price |
+| `Crawford` neighbourhood | Positive | Crawford is the highest-value neighbourhood in the dataset |
+
+**Investment implication:** Properties in Crawford with large floor areas and recent construction year represent the highest-value acquisition targets for Surprise Housing's Australian strategy.
+
+---
 
 ## Contact
-Created by [@chetnapriyadarshini] - feel free to contact me!
 
+Created by [@chetnapriyadarshini](https://github.com/chetnapriyadarshini) — feel free to reach out with questions or suggestions.
